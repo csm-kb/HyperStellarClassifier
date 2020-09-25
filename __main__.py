@@ -66,10 +66,11 @@ def test_image_generator(ids, test_dir, shape=IMG_SHAPE):
     return x_batch
 
 if __name__ == "__main__":
+    assert(os.path.exists(data_dir))
     startTime = time.time()
 
     # this is set up so you can specify multiple different models or variations of models, for direct comparison, at the same time!
-    #   - note: a single 'models.cnn.CNN' takes ~1.5+ hours to train, so beware...
+    #   - note: a single 'models.cnn.CNN' with this config + 30 epochs takes ~1.5+ hours to train (~2 min/epoch), so beware...
     kargs_dict_list = [
         {'class': models.cnn.CNN,
         '__init__': {
@@ -103,7 +104,8 @@ if __name__ == "__main__":
             ('Activation', { 'activation':'sigmoid' })
             ],
             'optimizer':'adamax', 'loss':'binary_crossentropy', 'metrics':[root_mean_squared_error]
-            }
+            },
+        'epochs': 30
         }
     ]
 
@@ -121,7 +123,7 @@ if __name__ == "__main__":
         assert(model)
         batch_size = 128
         # train the model
-        model.fit(X_train, y_train, epochs=30, validation_data=(X_test, y_test))
+        model.fit(X_train, y_train, epochs=kargs_dict['epochs'], validation_data=(X_test, y_test))
         # once done, prepare the validation dataset
         val_files = os.listdir(test_imgs)
         val_preds = []
@@ -145,7 +147,7 @@ if __name__ == "__main__":
         if not os.path.exists('./out'):
             os.makedirs('./out')
         now = datetime.datetime.now()
-        out_title = './out/sample_out-{0}-{1}{2}{3}_{4}{5}{6}.csv'.format(model.__name__,now.month,now.day,now.year,now.hour,now.minute,now.second)
+        out_title = './out/sample_out-{}-{}{}{}_{}{}{}.csv'.format(model.__name__,now.month,now.day,now.year,now.hour,now.minute,now.second)
         out_df.to_csv(out_title, index=False)
 
     print('Finished! Time elapsed: {} seconds'.format(str(time.time() - startTime)))
