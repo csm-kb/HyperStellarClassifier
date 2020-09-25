@@ -11,11 +11,10 @@ class CNN:
         self.optimizer = optimizer
         self.loss = loss
 
-        # create the model
-        # The 6 lines of code below define the convolutional base using a common pattern: a stack of Conv2D and MaxPooling2D layers.
-        # As input, a CNN takes tensors of shape (image_height, image_width, color_channels), ignoring the batch size. If you are new to these dimensions,
-        # color_channels refers to (R,G,B). In this example, we configure CNN to process inputs of shape (32, 32, 3), which is the format of CIFAR images.
-        # You can do this by passing the argument input_shape to the first layer.
+        # create the model!
+        # The lines of code below define the convolutional base using a common pattern: a stack of various tf.keras.Layer objects:
+        #   - As input, a CNN takes tensors of shape (image_height, image_width, color_channels), ignoring the batch size.
+        #   - The dim 'color_channels' refers to (R,G,B), typically 3.
         self.model = tf.keras.models.Sequential()
 
         for layer in layers:
