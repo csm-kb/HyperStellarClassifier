@@ -1,5 +1,8 @@
+import os
+import datetime
 from time import time
 import numpy as np
+import pandas as pd
 import tensorflow as tf
 import matplotlib.pyplot as plt
 
@@ -51,12 +54,19 @@ class CNN:
         plt.plot(history.history['val_root_mean_squared_error'], label = 'val_root_mean_squared_error')
         plt.xlabel('Epoch')
         plt.ylabel('RMSE')
-        plt.ylim([0.5, 1])
+        plt.ylim([0, 1])
         plt.legend(loc='lower right')
+        if not os.path.exists('./out'):
+            os.makedirs('./out')
+        now = datetime.datetime.now()
+        plt.savefig('./out/cnn_plot_epoch_rmse-{}{}{}_{}{}{}.png'.format(now.month,now.day,now.year,now.hour,now.minute,now.second))
 
         test_images, test_labels = validation_data
         test_loss, test_acc = self.model.evaluate(test_images,  test_labels, verbose=2)
-        print('rmse: {0}'.format(test_acc))
+        print('loss\t: {0}\nrmse\t: {1}'.format(test_loss, test_acc))
+        # save eval results to csv
+        out_df = pd.DataFrame(np.array([test_loss, test_acc]), columns=['loss','rmse'])
+        out_df.to_csv('./out/cnn_eval_loss_rmse-{}{}{}_{}{}{}.csv'.format(now.month,now.day,now.year,now.hour,now.minute,now.second), index=False)
 
     def predict(self, images):
         return self.model.predict(images)
