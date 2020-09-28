@@ -119,7 +119,9 @@ if __name__ == "__main__":
 
     # iterate through each model we defined in our dict earlier
     for kargs_dict in kargs_dict_list:
+        now = datetime.datetime.now()
         model = kargs_dict['class'](**kargs_dict['__init__'])
+        model_out_dir = './out/{}'.format(model.__name__)
         assert(model)
         batch_size = 128
         # train the model
@@ -144,10 +146,9 @@ if __name__ == "__main__":
         out_df = pd.DataFrame(np.hstack((ids, Y_pred)), columns=df.columns)
         out_df = out_df.sort_values(by=['GalaxyID'])
         # write test results to file
-        if not os.path.exists('./out'):
-            os.makedirs('./out')
-        now = datetime.datetime.now()
-        out_title = './out/sample_out-{}-{}{}{}_{}{}{}.csv'.format(model.__name__,now.month,now.day,now.year,now.hour,now.minute,now.second)
-        out_df.to_csv(out_title, index=False)
+        if not os.path.exists(model_out_dir):
+            os.makedirs(model_out_dir)
+        out_title = 'sample_out-{}-{}{}{}_{}{}{}.csv'.format(model.__name__,now.month,now.day,now.year,now.hour,now.minute,now.second)
+        out_df.to_csv(model_out_dir + out_title, index=False)
 
     print('Finished! Time elapsed: {} seconds'.format(str(time.time() - startTime)))
