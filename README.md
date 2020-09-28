@@ -30,7 +30,7 @@ Data: https://www.kaggle.com/c/galaxy-zoo-the-galaxy-challenge
   * folder: `images_test_rev1`
   * file: `training_solutions_rev1.csv`
   
-* When you feel ready to run it after messing with parameters, etc: `python __main__.py`
+* When you feel ready to run it after messing with parameters, making a new model, etc: `python __main__.py`
   * It will take some time. Get a cup of tea and relax!
   * The script will create an `out` directory for you at the end. Statistics will appear in the terminal as well, such as epoch training progress and at the end, RMSE score.
 
