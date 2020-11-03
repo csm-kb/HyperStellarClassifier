@@ -105,7 +105,7 @@ if __name__ == "__main__":
             ],
             'optimizer':'adamax', 'loss':'binary_crossentropy', 'metrics':[root_mean_squared_error]
             },
-        'epochs': 30
+        'epochs': 1
         }
     ]
 
@@ -121,7 +121,7 @@ if __name__ == "__main__":
     for kargs_dict in kargs_dict_list:
         now = datetime.datetime.now()
         model = kargs_dict['class'](**kargs_dict['__init__'])
-        model_out_dir = './out/{}'.format(model.__name__)
+        model_out_dir = './out/{}'.format(type(model).__name__)
         assert(model)
         batch_size = 128
         # train the model
@@ -148,7 +148,7 @@ if __name__ == "__main__":
         # write test results to file
         if not os.path.exists(model_out_dir):
             os.makedirs(model_out_dir)
-        out_title = 'sample_out-{}-{}{}{}_{}{}{}.csv'.format(model.__name__,now.month,now.day,now.year,now.hour,now.minute,now.second)
+        out_title = 'sample_out-{}-{}{}{}_{}{}{}.csv'.format(type(model).__name__,now.month,now.day,now.year,now.hour,now.minute,now.second)
         out_df.to_csv(model_out_dir + out_title, index=False)
 
     print('Finished! Time elapsed: {} seconds'.format(str(time.time() - startTime)))

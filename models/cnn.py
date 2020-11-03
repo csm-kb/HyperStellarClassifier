@@ -59,14 +59,14 @@ class CNN:
         if not os.path.exists('./out/{}'.format(self.__name__)):
             os.makedirs('./out/{}'.format(self.__name__))
         now = datetime.datetime.now()
-        plt.savefig('./out/{}/plot_epoch_rmse-{}{}{}_{}{}{}.png'.format(self.__name__,now.month,now.day,now.year,now.hour,now.minute,now.second))
+        plt.savefig('./out/{}/plot_epoch_rmse-{}{}{}_{}{}{}.png'.format(type(self).__name__,now.month,now.day,now.year,now.hour,now.minute,now.second))
 
         test_images, test_labels = validation_data
         test_loss, test_acc = self.model.evaluate(test_images,  test_labels, verbose=2)
         print('loss\t: {0}\nrmse\t: {1}'.format(test_loss, test_acc))
         # save eval results to csv
         out_df = pd.DataFrame(np.array([test_loss, test_acc]), columns=['loss','rmse'])
-        out_df.to_csv('./out/{}/eval_loss_rmse-{}{}{}_{}{}{}.csv'.format(self.__name__,now.month,now.day,now.year,now.hour,now.minute,now.second), index=False)
+        out_df.to_csv('./out/{}/eval_loss_rmse-{}{}{}_{}{}{}.csv'.format(type(self).__name__,now.month,now.day,now.year,now.hour,now.minute,now.second), index=False)
 
     def predict(self, images):
         return self.model.predict(images)
