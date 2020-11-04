@@ -56,8 +56,8 @@ class CNN:
         plt.ylabel('RMSE')
         plt.ylim([0, 1])
         plt.legend(loc='lower right')
-        if not os.path.exists('./out/{}'.format(self.__name__)):
-            os.makedirs('./out/{}'.format(self.__name__))
+        if not os.path.exists('./out/{}'.format(type(self).__name__)):
+            os.makedirs('./out/{}'.format(type(self).__name__))
         now = datetime.datetime.now()
         plt.savefig('./out/{}/plot_epoch_rmse-{}{}{}_{}{}{}.png'.format(type(self).__name__,now.month,now.day,now.year,now.hour,now.minute,now.second))
 
