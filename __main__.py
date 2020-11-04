@@ -77,23 +77,20 @@ if __name__ == "__main__":
             'layers':[
             ('Conv2D', { 'filters':512,'kernel_size':(3, 3),'input_shape':(IMG_SHAPE[0], IMG_SHAPE[1], 3) }),
             ('Conv2D', { 'filters':256,'kernel_size':(3, 3) }),
-            # ('BatchNorm', {}),
             ('Activation', { 'activation':'relu' }),
             ('MaxPooling2D', { 'pool_size':(2, 2) }),
 
             ('Conv2D', { 'filters':256,'kernel_size':(3, 3) }),
             ('Conv2D', { 'filters':128,'kernel_size':(3, 3) }),
-            # ('BatchNorm', {}),
             ('Activation', { 'activation':'relu' }),
             ('MaxPooling2D', { 'pool_size':(2, 2) }),
 
             ('Conv2D', { 'filters':128,'kernel_size':(3, 3) }),
             ('Conv2D', { 'filters':128,'kernel_size':(3, 3) }),
-            # ('BatchNorm', {}),
             ('Activation', { 'activation':'relu' }),
             ('GlobalMaxPooling2D', {}),
 
-            # ('Dropout', { 'rate':0.25 }),
+            ('Dropout', { 'rate':0.25 }),
             ('Dense', { 'units':128 }),
             ('Activation', { 'activation':'relu' }),
             ('Dropout', { 'rate':0.25 }),
@@ -108,45 +105,7 @@ if __name__ == "__main__":
             ],
             'optimizer':'adamax', 'loss':'binary_crossentropy', 'metrics':[root_mean_squared_error]
             },
-        'epochs': 10
-        },
-        {'class': models.cnn.CNN,
-        '__init__': {
-            'layers':[
-            ('Conv2D', { 'filters':512,'kernel_size':(3, 3),'input_shape':(IMG_SHAPE[0], IMG_SHAPE[1], 3) }),
-            ('Conv2D', { 'filters':256,'kernel_size':(3, 3) }),
-            ('BatchNorm', {}),
-            ('Activation', { 'activation':'relu' }),
-            ('MaxPooling2D', { 'pool_size':(2, 2) }),
-
-            ('Conv2D', { 'filters':256,'kernel_size':(3, 3) }),
-            ('Conv2D', { 'filters':128,'kernel_size':(3, 3) }),
-            ('BatchNorm', {}),
-            ('Activation', { 'activation':'relu' }),
-            ('MaxPooling2D', { 'pool_size':(2, 2) }),
-
-            ('Conv2D', { 'filters':128,'kernel_size':(3, 3) }),
-            ('Conv2D', { 'filters':128,'kernel_size':(3, 3) }),
-            ('BatchNorm', {}),
-            ('Activation', { 'activation':'relu' }),
-            ('GlobalMaxPooling2D', {}),
-
-            # ('Dropout', { 'rate':0.25 }),
-            ('Dense', { 'units':128 }),
-            ('Activation', { 'activation':'relu' }),
-            ('Dropout', { 'rate':0.25 }),
-            ('Dense', { 'units':128 }),
-            ('Activation', { 'activation':'relu' }),
-            ('Dropout', { 'rate':0.25 }),
-            ('Dense', { 'units':128 }),
-            ('Activation', { 'activation':'relu' }),
-            ('Dropout', { 'rate':0.25 }),
-            ('Dense', { 'units':37 }),
-            ('Activation', { 'activation':'sigmoid' })
-            ],
-            'optimizer':'adamax', 'loss':'binary_crossentropy', 'metrics':[root_mean_squared_error]
-            },
-        'epochs': 10
+        'epochs': 1
         }
     ]
 
@@ -181,7 +140,7 @@ if __name__ == "__main__":
             y_pred = model.predict(X)
             val_preds.append(y_pred)
         # prepare data for write
-        val_preds = np.array(val_preds)
+        val_preds = np.array(val_preds, dtype=object)
         Y_pred = np.vstack(val_preds)
         ids = np.array([v.split('.')[0] for v in val_files]).reshape(len(val_files), 1)
         out_df = pd.DataFrame(np.hstack((ids, Y_pred)), columns=df.columns)
@@ -191,5 +150,7 @@ if __name__ == "__main__":
             os.makedirs(model_out_dir)
         out_title = 'sample_out-{}-{}{}{}_{}{}{}.csv'.format(type(model).__name__,now.month,now.day,now.year,now.hour,now.minute,now.second)
         out_df.to_csv(model_out_dir + out_title, index=False)
+        # free mem
+        model = None
 
     print('Finished! Time elapsed: {} seconds'.format(str(time.time() - startTime)))
